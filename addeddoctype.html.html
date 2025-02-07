@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbital Token - Prelaunch</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.3/web3.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(to right, #ff512f, #dd2476);
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+        }
+        .wallet-btn, .logout-btn {
+            padding: 10px 20px;
+            background: #ff512f;
+            border: none;
+            color: white;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .dashboard {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .countdown {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .input-box {
+            width: 80%;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+        .copy-btn {
+            padding: 10px;
+            background: #dd2476;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img src="https://ibb.co/DPYSXf0" class="logo" alt="Orbital Token Logo">
+        <h1>Orbital Token - Prelaunch</h1>
+
+        <button class="wallet-btn" onclick="connectWallet()">Connect Wallet</button>
+        <button class="logout-btn" onclick="disconnectWallet()">Logout</button>
+        
+        <p><strong>Wallet Address:</strong> <span id="walletAddress">Not Connected</span></p>
+
+        <!-- Countdown Timer -->
+        <div class="countdown">
+            <p>Time Remaining Until April 1, 2025:</p>
+            <span id="countdown-timer"></span>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard">
+            <h2>Dashboard</h2>
+            <p><strong>Direct Team:</strong> <span id="directTeam">0</span></p>
+            <p><strong>Bonus:</strong> <span id="bonus">0 BNB</span></p>
+            <p><strong>Total Earnings:</strong> <span id="earnings">0 BNB</span></p>
+            <p><strong>Total Team Earnings:</strong> <span id="teamEarnings">0 BNB</span></p>
+
+            <h3>Referral System</h3>
+            <input type="text" class="input-box" id="referralLink" readonly>
+            <button class="copy-btn" onclick="copyReferral()">Copy Referral Link</button>
+        </div>
+    </div>
+
+    <script>
+        let walletAddress = null;
+
+        async function connectWallet() {
+            if (window.ethereum) {
+                try {
+                    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                    walletAddress = accounts[0];
+                    document.getElementById("walletAddress").innerText = walletAddress;
+                    generateReferralLink(walletAddress);
+                } catch (error) {
+                    console.error("Wallet connection failed", error);
+                }
+            } else {
+                alert("Please install MetaMask or Trust Wallet.");
+            }
+        }
+
+        function disconnectWallet() {
+            walletAddress = null;
+            document.getElementById("walletAddress").innerText = "Not Connected";
+            document.getElementById("referralLink").value = "";
+        }
+
+        function generateReferralLink(wallet) {
+            let referralLink = `https://orbitaltoken.com/?ref=${wallet}`;
+            document.getElementById("referralLink").value = referralLink;
+        }
+
+        function copyReferral() {
+            let referralLink = document.getElementById("referralLink");
+            referralLink.select();
+            document.execCommand("copy");
+            alert("Referral Link Copied: " + referralLink.value);
+        }
+
+        function startCountdown() {
+            const targetDate = new Date("2025-04-01T00:00:00Z").getTime();
+            setInterval(() => {
+                const now = new Date().getTime();
+                const difference = targetDate - now;
+
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById("countdown-timer").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
+        }
+
+        startCountdown();
+    </script>
+
+</body>
+</html>
